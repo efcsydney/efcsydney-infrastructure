@@ -79,14 +79,6 @@ Parameters:
     Default: 192.168.100.0/24
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
     ConstraintDescription: must be a valid CIDR range of the form x.x.x.x/x.
-  RemoteCidrForPublicAcl:
-    Description: CIDR Block for Public ACL to Grant Access to Network (i.e. 32.159.24.111/32)
-    Type: String
-    MinLength: '9'
-    MaxLength: '18'
-    Default: 32.159.24.111/32
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
-    ConstraintDescription: must be a valid CIDR range of the form x.x.x.x/x.
 
   # Rule Numbers
   AllowVpcSubnetsRuleNumber:
@@ -95,36 +87,15 @@ Parameters:
   AllowRemoteNetworkPublicRuleNumber:
     Type: Number
     Default: '105'
+  AllowSSHToPublicRuleNumber:
+    Type: Number
+    Default: '106'
   AllowHttpToPublicRuleNumber:
     Type: Number
     Default: '200'
   AllowHttpsToPublicRuleNumber:
     Type: Number
     Default: '205'
-  DenyMysqlToPublicRuleNumber:
-    Type: Number
-    Default: '800'
-  DenyOracleToPublicRuleNumber:
-    Type: Number
-    Default: '805'
-  DenyAuroraToPublicRuleNumber:
-    Type: Number
-    Default: '810'
-  DenyNFSToPublicRuleNumber:
-    Type: Number
-    Default: '815'
-  DenyRDPToPublicRuleNumber:
-    Type: Number
-    Default: '820'
-  DenyPostgreToPublicRuleNumber:
-    Type: Number
-    Default: '825'
-  Deny8080ToPublicRuleNumber:
-    Type: Number
-    Default: '830'
-  Deny8443ToPublicRuleNumber:
-    Type: Number
-    Default: '835'
   AllowReturnTrafficToPublicRuleNumber:
     Type: Number
     Default: '900'
@@ -318,19 +289,19 @@ Resources:
       PortRange:
         From: '0'
         To: '65535'
-  InboundPublicNetworkAclAllowRemoteNetwork:
+  InboundPublicNetworkAclAllowSSH:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref AllowRemoteNetworkPublicRuleNumber
-      Protocol: "-1"
+      RuleNumber: !Ref AllowSSHToPublicRuleNumber
+      Protocol: '6'
       RuleAction: allow
       Egress: 'false'
-      CidrBlock: !Ref RemoteCidrForPublicAcl
+      CidrBlock: 0.0.0.0/0
       PortRange:
-        From: '0'
-        To: '65535'
+        From: '22'
+        To: '22'
   InboundPublicNetworkAclAllowHTTP:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
@@ -357,123 +328,6 @@ Resources:
       PortRange:
         From: '443'
         To: '443'
-  InboundPublicNetworkAclDenyMssql:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref DenyMysqlToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '1433'
-        To: '1433'
-  InboundPublicNetworkAclDenyOracle:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref DenyOracleToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '1521'
-        To: '1521'
-  InboundPublicNetworkAclDenyAurora:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref DenyAuroraToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '3306'
-        To: '3306'
-  InboundPublicNetworkAclDenyNfs:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref DenyNFSToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '2049'
-        To: '2049'
-  InboundPublicNetworkAclDenyRdp:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref DenyRDPToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '3389'
-        To: '3389'
-  InboundPublicNetworkAclDenyPostgre:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref DenyPostgreToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '5432'
-        To: '5432'
-  InboundPublicNetworkAclDeny8080:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref Deny8080ToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '8080'
-        To: '8080'
-  InboundPublicNetworkAclDeny8443:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref Deny8443ToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '8443'
-        To: '8443'
-  InboundPublicNetworkAclDeny8443:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref Deny8443ToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '8443'
-        To: '8443'
   InboundPublicNetworkAclAllowReturnTraffic:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
@@ -687,27 +541,11 @@ Outputs:
         - ", "
         - !Ref AllowRemoteNetworkPublicRuleNumber
         - ", "
+        - !Ref AllowSSHToPublicRuleNumber
+        - ", "
         - !Ref AllowHttpToPublicRuleNumber
         - ", "
-        - !Ref AllowHttpsToPublicRuleNumber
-        - ", "
-        - !Ref DenyMysqlToPublicRuleNumber
-        - ", "
-        - !Ref DenyOracleToPublicRuleNumber
-        - ", "
-        - !Ref DenyAuroraToPublicRuleNumber
-        - ", "
-        - !Ref DenyNFSToPublicRuleNumber
-        - ", "
-        - !Ref DenyRDPToPublicRuleNumber
-        - ", "
-        - !Ref DenyPostgreToPublicRuleNumber
-        - ", "
-        - !Ref Deny8080ToPublicRuleNumber
-        - ", "
-        - !Ref Deny8443ToPublicRuleNumber
-        - ", "
-        - !Ref AllowReturnTrafficToPublicRuleNumber
+        - !Ref AllowHttpsToPublicRuleNumber 
         - ") Outbound ("
         - !Ref AllowAllOutboundPublicRuleNumber
         - ")"
@@ -730,7 +568,6 @@ Metadata:
         default: Remote Access
       Parameters:
       - RemoteCidrForSecurityGroup
-      - RemoteCidrForPublicAcl
     - Label:
         default: Subnets
       Parameters:
@@ -746,17 +583,9 @@ Metadata:
       Parameters:
       - AllowVpcSubnetsRuleNumber
       - AllowRemoteNetworkPublicRuleNumber
+      - AllowSSHToPublicRuleNumber
       - AllowHttpToPublicRuleNumber
       - AllowHttpsToPublicRuleNumber
-      - DenyMysqlToPublicRuleNumber
-      - DenyOracleToPublicRuleNumber
-      - DenyAuroraToPublicRuleNumber
-      - DenyNFSToPublicRuleNumber
-      - DenyRDPToPublicRuleNumber
-      - DenyPostgreToPublicRuleNumber
-      - Deny8080ToPublicRuleNumber
-      - Deny8443ToPublicRuleNumber
-      - AllowReturnTrafficToPublicRuleNumber
       - AllowAllOutboundPublicRuleNumber
     - Label:
         default: Private ACL Rule Numbers
@@ -770,8 +599,6 @@ Metadata:
         default: Delete After Date
       RemoteCidrForSecurityGroup:
         default: Network CIDR for SG
-      RemoteCidrForPublicAcl:
-        default: Network CIDR for ACL
       VPCSubnetCidrBlock:
         default: VPC Subnet
       PublicSubnetCidrBlock1:
@@ -790,26 +617,12 @@ Metadata:
         default: Allow VPC Subnets
       AllowRemoteNetworkPublicRuleNumber:
         default: Allow Remote Network
+      AllowSSHToPublicRuleNumber:
+        default: Allow SSH
       AllowHttpToPublicRuleNumber:
         default: Allow HTTP
       AllowHttpsToPublicRuleNumber:
         default: Allow HTTPS
-      DenyMysqlToPublicRuleNumber:
-        default: Deny MySQL
-      DenyOracleToPublicRuleNumber:
-        default: Deny Oracle
-      DenyAuroraToPublicRuleNumber:
-        default: Deny Aurora
-      DenyNFSToPublicRuleNumber:
-        default: Deny NFS
-      DenyRDPToPublicRuleNumber:
-        default: Deny RDP
-      DenyPostgreToPublicRuleNumber:
-        default: Deny Postgre
-      Deny8080ToPublicRuleNumber:
-        default: Deny 8080
-      Deny8443ToPublicRuleNumber:
-        default: Deny 8443
       AllowReturnTrafficToPublicRuleNumber:
         default: Allow Return Traffic
       AllowAllOutboundPublicRuleNumber:
