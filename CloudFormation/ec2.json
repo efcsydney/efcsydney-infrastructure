@@ -8,7 +8,7 @@
         "GroupDescription": "EC2 security group for docker deployment",
         "VpcId": {
           "Fn::ImportValue": {
-            "Fn::Sub": "Production-VPC-VpcId"
+            "Fn::Sub": "VPC-VPCID"
           }
         },
         "SecurityGroupIngress": [
