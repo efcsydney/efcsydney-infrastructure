@@ -481,7 +481,7 @@ Outputs:
     Description: Created VPC
     Value: !Ref VPC
     Export:
-      Name: !Sub "VPCID"
+      Name: !Sub "VPC-VPCID"
   VPCCIDR:
     Description: VPC Subnet CIDR Block
     Value: !Ref VPCSubnetCidrBlock
