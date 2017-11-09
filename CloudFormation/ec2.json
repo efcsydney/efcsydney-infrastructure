@@ -152,9 +152,7 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": {
-              "efcsydney-roster"
-            },
+            "Value": "efcsydney-roster",
             "PropagateAtLaunch": true
           },
           {
