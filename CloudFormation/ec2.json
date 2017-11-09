@@ -90,7 +90,7 @@
     "LaunchConfiguration": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
-        "ImageId": "ami-29f80351",
+        "ImageId": "ami-e3b75981",
         "InstanceType": "t2.micro",
         "KeyName": "efcsydney",
         "SecurityGroups": [
@@ -157,7 +157,7 @@
           },
           {
             "Key": "ImageId",
-            "Value": "ami-29f80351",
+            "Value": "ami-e3b75981",
             "PropagateAtLaunch": true
           }
         ],
