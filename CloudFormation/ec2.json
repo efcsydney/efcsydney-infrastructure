@@ -66,28 +66,9 @@
                     "s3:ListBucket"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::ptt-alertor-2-bucket",
-                    "arn:aws:s3:::ptt-alertor-2-bucket/*"
+                    "arn:aws:s3:::*"
                   ],
                   "Sid": "ConfigReadAccess"
-                }
-              ]
-            }
-          },
-          {
-            "PolicyName": "ecsAccess",
-            "PolicyDocument": {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "ecs:*",
-                    "ecr:*",
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents"
-                  ],
-                  "Resource": "*"
                 }
               ]
             }
