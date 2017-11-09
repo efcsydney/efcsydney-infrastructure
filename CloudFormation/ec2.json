@@ -92,7 +92,7 @@
       "Properties": {
         "ImageId": "ami-29f80351",
         "InstanceType": "t2.micro",
-        "KeyName": "ecs",
+        "KeyName": "efcsydney",
         "SecurityGroups": [
           {
             "Ref": "SecurityGroup"
@@ -101,24 +101,6 @@
         "AssociatePublicIpAddress": true,
         "IamInstanceProfile": {
           "Ref": "IamInstanceProfile"
-        },
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash\n\nconfig_bucket=",
-                "ptt-alertor-2-bucket",
-                "\necho ECS_CLUSTER=",
-                {
-                  "Fn::ImportValue": {
-                    "Fn::Sub": "Production-ECS-Cluster"
-                  }
-                },
-                " > /etc/ecs/ecs.config\nmkdir /etc/ecs/config\nyum install -y aws-cli\naws s3 cp s3://$config_bucket/config/ /etc/ecs/config/ --recursive\n\nyum update -y\nyum install -y gcc-c++ make\ncurl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -\nyum install -y nodejs\n\nyum install -y wget \nwget http://download.redis.io/redis-stable.tar.gz && tar xvzf redis-stable.tar.gz && cd redis-stable && make\nnpm install redis-dump -g"
-              ]
-            ]
-          }
         }
       }
     },
@@ -131,34 +113,34 @@
         "AvailabilityZones": [
           {
             "Fn::ImportValue": {
-              "Fn::Sub": "Production-VPC-AvailabilityZone-A"
+              "Fn::Sub": "VPC-AvailabilityZone-A"
             }
           },
           {
             "Fn::ImportValue": {
-              "Fn::Sub": "Production-VPC-AvailabilityZone-B"
+              "Fn::Sub": "VPC-AvailabilityZone-B"
             }
           },
           {
             "Fn::ImportValue": {
-              "Fn::Sub": "Production-VPC-AvailabilityZone-C"
+              "Fn::Sub": "VPC-AvailabilityZone-C"
             }
           }
         ],
         "VPCZoneIdentifier": [
           {
             "Fn::ImportValue": {
-              "Fn::Sub": "Production-VPC-PublicSubnet-A"
+              "Fn::Sub": "VPC-PublicSubnet-A"
             }
           },
           {
             "Fn::ImportValue": {
-              "Fn::Sub": "Production-VPC-PublicSubnet-B"
+              "Fn::Sub": "VPC-PublicSubnet-B"
             }
           },
           {
             "Fn::ImportValue": {
-              "Fn::Sub": "Production-VPC-PublicSubnet-C"
+              "Fn::Sub": "VPC-PublicSubnet-C"
             }
           }
         ],
@@ -171,13 +153,7 @@
           {
             "Key": "Name",
             "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  "Production",
-                  "-ECS-host"
-                ]
-              ]
+              "efcsydney-roster"
             },
             "PropagateAtLaunch": true
           },
@@ -190,15 +166,6 @@
         "TerminationPolicies": [
           "OldestInstance"
         ]
-      }
-    }
-  },
-  "Outputs": {
-    "AutoScalingGroup": {
-      "Value": { "Ref": "AutoScalingGroup" },
-      "Description": "Name of Auto Scaling Group",
-      "Export": {
-        "Name": "Production-ECS-hosts-Auto-Scaling-Group"
       }
     }
   }
