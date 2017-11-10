@@ -480,6 +480,8 @@ Outputs:
   VPC:
     Description: Created VPC
     Value: !Ref VPC
+    Export:
+      Name: !Sub "VPC-VPCID"
   VPCCIDR:
     Description: VPC Subnet CIDR Block
     Value: !Ref VPCSubnetCidrBlock
@@ -498,21 +500,33 @@ Outputs:
   PublicSubnet1:
     Description: Public Subnet 1 Created for VPC
     Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub "VPC-PublicSubnet-A"
   PublicSubnet2:
     Description: Public Subnet 2 Created for VPC
     Value: !Ref PublicSubnet2
+    Export:
+      Name: !Sub "VPC-PublicSubnet-B"
   PublicSubnet3:
     Description: Public Subnet 3 Created for VPC
     Value: !Ref PublicSubnet3
+    Export:
+      Name: !Sub "VPC-PublicSubnet-C"
   AvailabilityZone1:
     Description: Private Subnet IDs Created for VPC
     Value: !GetAtt PublicSubnet1.AvailabilityZone
+    Export:
+      Name: !Sub "VPC-AvailabilityZone-A"
   AvailabilityZone2:
     Description: Private Subnet IDs Created for VPC
     Value: !GetAtt PublicSubnet2.AvailabilityZone
+    Export:
+      Name: !Sub "VPC-AvailabilityZone-B"
   AvailabilityZone3:
     Description: Private Subnet IDs Created for VPC
     Value: !GetAtt PublicSubnet3.AvailabilityZone
+    Export:
+      Name: !Sub "VPC-AvailabilityZone-C"
   PublicSubnetCidr1:
     Description: Public Subnet IDs Created for VPC
     Value: !Ref PublicSubnetCidrBlock1
